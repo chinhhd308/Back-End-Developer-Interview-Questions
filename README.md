@@ -527,7 +527,7 @@ When would you use a document database like MongoDB instead of a relational data
 
 #### Branching in HG and in Git
 Why is branching with Mercurial or git easier than with SVN?
- 
+
 #### DVCS
 What are the pros and cons of distributed version control systems like Git over centralized ones like SVN?
 
@@ -869,6 +869,21 @@ As a software engineer you want both to innovate and to be predictable. How thos
 #### Good Code
 What makes good code good?
 
+1. The very first rule is `simple`. The code is simple to understand, simple to modify, this means the code is not complex not tangled and not spaghetti.
+Simple code doesn't  cause the side affect outside of its scope and also cannot be influenced by outside scope.
+
+
+2. `Clear` the code must tell what it doing at every levels, no hidden things, no mess "everything happens for a reason, and the reason should be clear".
+
+3. `Reliable` works in the same way, no matter the conditions or context. It's hard to be used in incorrect way, hard to break.
+
+4. `Efficient` it's designed to be as fast as possible, it's designed to consume as little memory as possible. You must think not only about the data flow but also the flow rate, if the design is bad, expect a laggy app.
+
+5. `Composable` (Có thể dùng một lần), it means your code is built like everthing else around you. Look around you can always find a hierarchy, smaller things are combined to create greater things. Good code creates big systems from smaller ones, which are built from even smaller components
+
+6. `Balance` and `Trade-offs` usually, some of these qualities are at odds with others. The clearest code might not be the fastest one. Most reliable code might not be the simplest. You need to find the right balance between them, depending on context and the problem you try to solve.
+
+[https://dev.to/raresportan/what-makes-good-code-good-5cn7](https://dev.to/raresportan/what-makes-good-code-good-5cn7)
 #### Stradming
 Explain streaming and how you would implement it.
 
