@@ -27,7 +27,7 @@ Sooner or later I will complete it with the relative answers. Feel free to contr
 
 * [Questions about Design Patterns](#patterns)
   * [Globals Are Evil](#globals-are-evil)
-  * [Inversion of Control](#inversion-of-control)
+  * [Inversion of Control](#inversion-of-control) :white_check_mark:
   * [Law of Demeter](#law-of-demeter)
   * [Active-Record](#active-record)
   * [Data-Mapper](#data-mapper)
@@ -229,7 +229,7 @@ Sooner or later I will complete it with the relative answers. Feel free to contr
   * [Resistance to Change](#resistance-to-change)
   * [Threading ELI5](#threading-eli5)
   * [Innovation and Predictability](#innovation-and-predictability)
-  * [Good Code](#good-code)
+  * [Good Code](#good-code) :white_check_mark:
   * [Stradming](#stradming)
   * [1 Week Improvement](#1-week-improvement)
   * [Learnt this week](#learnt-this-week)
@@ -284,6 +284,106 @@ Why are global and static objects evil? Can you show it with a code example? <br
 Tell me about Inversion of Control and how it improves the design of code.<br/>
 [Resources](design-patterns/inversion-of-control.md)
 
+```ruby
+class MiniNetflix
+  AMOUNT_SUBCRIPTION = 1000
+
+  def initialize(user)
+    @stripe = Stripe.new(user)
+  end
+
+  def purchase
+    @stripe.process(MiniNetflix::AMOUNT_SUBCRIPTION)
+  end
+end
+
+class Stripe
+  def initialize(user)
+    @user = user
+  end
+
+  def process(amount)
+    puts "#{@user} - pay #{amount} - Do something else to make payment!\n"
+  end
+end
+
+class Paypal
+  def initialize(user)
+    @user = user
+  end
+
+  # time is just a example to make different between Paypal class and Stripe class
+  def process(amount, time)
+    puts "#{@user} - want to pay #{amount} - Do something else to make payment! with #{time}\n"
+  end
+end
+
+MiniNetflix.new("Dylan").purchase
+
+# What happen if we have more payment third party services, like Paypal, Braintree?
+# Each third-party service has different way to payment
+# So what can we do with the current code if our business want to switch to Paypal?
+# We need to rewrite all the code in the main class, it's bad way
+
+class MiniNetflix
+  AMOUNT_SUBCRIPTION = 1000
+
+  def initialize(payment_processor)
+    @payment_processor = payment_processor
+  end
+
+  def purchase
+    @payment_processor.pay(MiniNetflix::AMOUNT_SUBCRIPTION)
+  end
+end
+
+class StripeProcessor
+  def initialize(user)
+    @stripe = Stripe.new(user)
+  end
+
+  def pay(amount)
+    @stripe.process(amount)
+  end
+end
+
+class PaypalProcessor
+  def initialize(user)
+    @paypal = Paypal.new(user)
+  end
+
+  def pay(amount)
+    @paypal.process(amount, Time.now)
+  end
+end
+
+class Stripe
+  def initialize(user)
+    @user = user
+  end
+
+  def process(amount)
+    puts "#{@user} - pay #{amount} - Do something else to make payment!\n"
+  end
+end
+
+class Paypal
+  def initialize(user)
+    @user = user
+  end
+
+  # time is just a example to make different between Paypal class and Stripe class
+  def process(amount, time)
+    puts "#{@user} - pay #{amount} - Do something else to make payment! at #{time}\n"
+  end
+end
+
+MiniNetflix.new(StripeProcessor.new("Dylan")).purchase
+MiniNetflix.new(PaypalProcessor.new("Mini")).purchase
+
+# Take a look at StripeProcessor and PaypalProcessor, it's the wrapper we use to make those work the same way.
+# After that, we no need to change the MiniNetflix class when we want change the payment service, just add another class and another wrapper class.
+```
 
 #### Law of Demeter
 The Law of Demeter (the Principle of Least Knowledge) states that each unit should have only limited knowledge about other units and it should only talk to its immediate friends (sometimes stated as "don't talk to strangers").<br/>
